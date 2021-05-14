@@ -1,5 +1,6 @@
 package hu.flowacademy.kappaspring;
 
+import hu.flowacademy.kappaspring.firststeps.Component2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

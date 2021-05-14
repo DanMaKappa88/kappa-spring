@@ -1,4 +1,4 @@
-package hu.flowacademy.kappaspring;
+package hu.flowacademy.kappaspring.firststeps.calculator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,5 +1,6 @@
-package hu.flowacademy.kappaspring;
+package hu.flowacademy.kappaspring.firststeps.calculator;
 
+import hu.flowacademy.kappaspring.firststeps.calculator.CalculatorRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,7 +28,8 @@ public class MainController {
     }
 
     @PutMapping("/api/multiply")
-    public int multiply(@RequestParam("num1") int first, @RequestParam("num2") int second) {
+    public int multiply(@RequestParam("num1") int first,
+                        @RequestParam("num2") int second) {
         return first * second;
     }
 

@@ -1,0 +1,6 @@
+# Átállítja a server default portját 8000-re
+# Terminalból történő idításnál is felülírható
+# Környezeti változóval: SERVER_PORT-nak értéket adva
+# Vagy pl. mavennel: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8081"
+server:
+  port: 8000

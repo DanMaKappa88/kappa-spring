@@ -1,15 +1,15 @@
-package hu.flowacademy.kappaspring;
+package hu.flowacademy.kappaspring.firststeps;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component
 // Az app indulásakor létrehoz egy példányt a Component2-ből
 // ez később bármikor/bárhol lekérhető
+@Component
 public class Component2 {
 
-    @Autowired
     // A Component2 beinjektálja a Component1 egy példányát
+    @Autowired
     private Component1 component1;
 
     public String getOtherOneName() {
