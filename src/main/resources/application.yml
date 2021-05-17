@@ -4,3 +4,11 @@
 # Vagy pl. mavennel: mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8081"
 server:
   port: 8000
+
+logging:
+  level:
+    root: INFO
+    hu:
+      flowacademy:
+        kappaspring:
+          reallife: DEBUG

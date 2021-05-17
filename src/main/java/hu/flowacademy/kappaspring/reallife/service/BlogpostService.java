@@ -1,9 +1,11 @@
 package hu.flowacademy.kappaspring.reallife.service;
 
+import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,6 +35,7 @@ public class BlogpostService {
     // de előtte lemásolja (toBuilder) és beállítja a szükséges mezőit a requestnek
     // úgy mint, id, createdAt
     public Blogpost save(Blogpost blogpost) {
+        validate(blogpost);
 //        blogpost.setId(UUID.randomUUID().toString());
         return blogpostRepository.save(blogpost.toBuilder()
                 .id(UUID.randomUUID().toString())
@@ -46,7 +49,7 @@ public class BlogpostService {
     // de előtte lemásolja (toBuilder) és beállítja a szükséges mezőit a requestnek
     // úgy mint, updatedAt
     public Blogpost update(String id, Blogpost blogpost) {
-        UUID.fromString(id);
+        validate(blogpost.toBuilder().id(id).build());
         return blogpostRepository.update(
                 blogpost.toBuilder()
                 .id(id)
@@ -58,5 +61,24 @@ public class BlogpostService {
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat
     public void delete(String id) {
         blogpostRepository.delete(id);
+    }
+
+    void validate(Blogpost blogpost) {
+        if (blogpost.getId() != null) {
+            try {
+                UUID.fromString(blogpost.getId());
+            } catch (IllegalArgumentException e) {
+                throw new ValidationException("id should be in UUID format");
+            }
+        }
+        if (!StringUtils.hasText(blogpost.getTitle())) {
+            throw new ValidationException("title should be present");
+        }
+        if (!StringUtils.hasText(blogpost.getDescription())) {
+            throw new ValidationException("description should be present");
+        }
+        if (!StringUtils.hasText(blogpost.getPublisher())) {
+            throw new ValidationException("publisher's name should be present");
+        }
     }
 }

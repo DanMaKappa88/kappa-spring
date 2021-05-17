@@ -1,5 +1,6 @@
 package hu.flowacademy.kappaspring.reallife.controller;
 
+import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
 import hu.flowacademy.kappaspring.reallife.service.BlogpostService;
 import lombok.RequiredArgsConstructor;
