@@ -4,6 +4,7 @@ import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -20,6 +21,10 @@ import java.util.UUID;
 public class BlogpostService {
     // Beinjektáljuk a repository-t, hogy tudjunk adatbázis (vagy olyasmi) műveleteket végezni
     private final BlogpostRepository blogpostRepository;
+
+//    public BlogpostService(@Qualifier("blogpostTreeRepository") BlogpostRepository blogpostRepository) {
+//        this.blogpostRepository = blogpostRepository;
+//    }
 
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat
     public List<Blogpost> findAll() {
