@@ -32,6 +32,7 @@ class BlogpostServiceTest {
         Blogpost actualBlogpost = whenSavingBlogpost(expectedBlogpost);
 
         thenResultsShouldMatch(expectedBlogpost, actualBlogpost);
+        assertTrue(false);
     }
 
     @Test
