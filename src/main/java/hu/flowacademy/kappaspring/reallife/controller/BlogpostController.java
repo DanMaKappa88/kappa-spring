@@ -20,8 +20,8 @@ public class BlogpostController {
 
     // Visszaad minden már felvett blogpostot
     @GetMapping("/blogposts")
-    public List<Blogpost> findAll() {
-        return blogpostService.findAll();
+    public List<Blogpost> findAll(@RequestParam(name = "searchQuery", required = false) Optional<String> searchQuery) {
+        return blogpostService.findAll(searchQuery);
     }
 
     // Visszaad egy konkrét blogpostot id alapján (path variable-ként küldve)

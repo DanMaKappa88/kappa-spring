@@ -2,6 +2,7 @@ package hu.flowacademy.kappaspring.reallife.service;
 
 import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
+import hu.flowacademy.kappaspring.reallife.repository.BlogpostJpaRepository;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Predicate;
 
 // Ellátjuk az osztályt @Service-szel, hogy a Spring Application Context-hez tartozzon
 // Így injektálni tud, és injektálhatóvá vállik (komponens lesz)
@@ -20,20 +22,28 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BlogpostService {
     // Beinjektáljuk a repository-t, hogy tudjunk adatbázis (vagy olyasmi) műveleteket végezni
-    private final BlogpostRepository blogpostRepository;
+    private final BlogpostJpaRepository blogpostRepository;
 
 //    public BlogpostService(@Qualifier("blogpostTreeRepository") BlogpostRepository blogpostRepository) {
 //        this.blogpostRepository = blogpostRepository;
 //    }
 
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat
-    public List<Blogpost> findAll() {
-        return blogpostRepository.findAll();
+    public List<Blogpost> findAll(Optional<String> searchQuery) {
+//        if (searchQuery.isPresent() && !"".equals(searchQuery.get())) {
+//            String searchValue = searchQuery.get();
+//            return blogpostRepository.findByTitleContainingOrDescriptionContaining(searchValue, searchValue);
+//        }
+        return searchQuery
+                .filter(Predicate.not(String::isEmpty))
+                .map(query -> blogpostRepository.findByTitleContainingOrDescriptionContaining(query, query))
+//                .map(query -> blogpostRepository.findByTitleOrDescriptionLike(query))
+                .orElseGet(blogpostRepository::findAll);
     }
 
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat
     public Optional<Blogpost> findOne(String id) {
-        return blogpostRepository.findOne(id);
+        return blogpostRepository.findById(id);
     }
 
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat
@@ -55,7 +65,7 @@ public class BlogpostService {
     // úgy mint, updatedAt
     public Blogpost update(String id, Blogpost blogpost) {
         validate(blogpost.toBuilder().id(id).build());
-        return blogpostRepository.update(
+        return blogpostRepository.save(
                 blogpost.toBuilder()
                 .id(id)
                 .updatedAt(LocalDateTime.now())
@@ -65,7 +75,7 @@ public class BlogpostService {
 
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat
     public void delete(String id) {
-        blogpostRepository.delete(id);
+        blogpostRepository.deleteById(id);
     }
 
     void validate(Blogpost blogpost) {
