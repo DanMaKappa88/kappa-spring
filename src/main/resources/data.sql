@@ -1,0 +1,1 @@
+INSERT INTO blogposts (id,publisher,title) VALUES("some_random_id", "Teszt Elek", "Very creative title")

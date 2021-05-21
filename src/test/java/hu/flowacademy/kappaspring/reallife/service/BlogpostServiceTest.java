@@ -3,6 +3,7 @@ package hu.flowacademy.kappaspring.reallife.service;
 import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostHashRepository;
+import hu.flowacademy.kappaspring.reallife.repository.BlogpostJpaRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,7 +24,7 @@ class BlogpostServiceTest {
     private BlogpostService blogpostService;
 
     @Mock
-    private BlogpostHashRepository blogpostHashRepository;
+    private BlogpostJpaRepository blogpostHashRepository;
 
     @Test
     public void testSave() {
@@ -68,7 +69,7 @@ class BlogpostServiceTest {
     }
 
     private Blogpost whenUpdatingBlogpost(String expectedId, Blogpost expectedBlogpost) {
-        when(blogpostHashRepository.update(any()))
+        when(blogpostHashRepository.save(any()))
                 .thenReturn(expectedBlogpost.toBuilder()
                         .id(expectedId)
                         .updatedAt(LocalDateTime.now())

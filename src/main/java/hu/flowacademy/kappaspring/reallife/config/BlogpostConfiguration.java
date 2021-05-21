@@ -1,5 +1,6 @@
 package hu.flowacademy.kappaspring.reallife.config;
 
+import com.github.javafaker.Faker;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostHashRepository;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostRepository;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostTreeRepository;
@@ -8,6 +9,8 @@ import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.Locale;
 
 @Slf4j
 @Configuration
@@ -25,6 +28,11 @@ public class BlogpostConfiguration {
             return new BlogpostTreeRepository();
         }
         throw new BeanCreationException("invalid blogpost type [should be hash or tree]: " + blogpostType);
+    }
+
+    @Bean
+    public Faker faker() {
+        return new Faker(Locale.forLanguageTag("hu-HU"));
     }
 
 }
