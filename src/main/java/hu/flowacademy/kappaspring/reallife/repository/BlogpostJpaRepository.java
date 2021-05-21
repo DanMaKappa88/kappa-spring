@@ -19,6 +19,9 @@ public interface BlogpostJpaRepository extends JpaRepository<Blogpost, String> {
 //    @Query("select b from Blogpost b where b.title LIKE %?#{escape([0])} escape ?#{escapeCharacter()} OR b.description LIKE %?#{escape([0])} escape ?#{escapeCharacter()}")
 //    List<Blogpost> findByTitleOrDescriptionLike(String query);
 
+    // Lehet SQL lekérdezést is írni a Querybe, viszont ne tegyünk ilyet
+//    @Query(value = "SELECT * FROM blogposts", nativeQuery = true)
+
     // Optional<Blogpost> findFirst, findLast
 
 }
