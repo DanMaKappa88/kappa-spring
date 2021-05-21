@@ -2,22 +2,19 @@ package hu.flowacademy.kappaspring.reallife.controller;
 
 import com.github.javafaker.Faker;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
+import hu.flowacademy.kappaspring.reallife.model.User;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.internal.hamcrest.HamcrestArgumentMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static io.restassured.RestAssured.*;
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
@@ -50,12 +47,12 @@ class BlogpostControllerIntTest {
 
     @Test
     public void testCreateBlogpost() {
-        createBlogpost();
+        createBlogpost(null);
     }
 
     @Test
     public void testUpdateBlogpost() {
-        Blogpost oldBlogpost = createBlogpost();
+        Blogpost oldBlogpost = createBlogpost(null);
         String title = faker.ancient().god();
         String publisher = faker.harryPotter().character();
         String description = faker.harryPotter().quote();
@@ -65,7 +62,7 @@ class BlogpostControllerIntTest {
                 .body(
                         Blogpost.builder()
                                 .title(title)
-                                .publisher(publisher)
+                                .publisher(null)
                                 .description(description)
                                 .build()
                 )
@@ -85,7 +82,8 @@ class BlogpostControllerIntTest {
 
     @Test
     public void testDeleteBlogpost() {
-        Blogpost blogpost = createBlogpost();
+
+        Blogpost blogpost = createBlogpost(null);
         given()
                 .log().all()
         .when()
@@ -96,9 +94,8 @@ class BlogpostControllerIntTest {
                 .statusCode(202);
     }
 
-    private Blogpost createBlogpost() {
+    private Blogpost createBlogpost(User publisher) {
         String title = faker.ancient().god();
-        String publisher = faker.harryPotter().character();
         String description = faker.harryPotter().quote();
         return given()
                 .log().all()

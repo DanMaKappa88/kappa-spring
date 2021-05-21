@@ -15,6 +15,12 @@ public interface BlogpostJpaRepository extends JpaRepository<Blogpost, String> {
     // Method based query: a függvény nevét alakítja át a JPA SQL lekérdezéssé
     List<Blogpost> findByTitleContainingOrDescriptionContaining(String title, String description);
 
+    List<Blogpost> findByTitleContainingOrDescriptionContainingOrPublisher_FullNameContaining(String title, String description, String publisherFullName);
+
+    // Példa a hql aggregált kapcsolatokban keresésre
+//    @Query("select b from Blogpost b where b.title like ?1 OR b.description like ?1 OR b.publisher.fullName like ?1")
+//    List<Blogpost> findByTitleOrDescriptionOrPublisherFullName(String searchQuery);
+
     // Ide pedig egy HQL lekérdezést írunk
 //    @Query("select b from Blogpost b where b.title LIKE %?#{escape([0])} escape ?#{escapeCharacter()} OR b.description LIKE %?#{escape([0])} escape ?#{escapeCharacter()}")
 //    List<Blogpost> findByTitleOrDescriptionLike(String query);

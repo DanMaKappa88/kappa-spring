@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class BlogpostService {
 //        }
         return searchQuery
                 .filter(Predicate.not(String::isEmpty))
-                .map(query -> blogpostRepository.findByTitleContainingOrDescriptionContaining(query, query))
+                .map(query -> blogpostRepository.findByTitleContainingOrDescriptionContainingOrPublisher_FullNameContaining(query, query, query))
 //                .map(query -> blogpostRepository.findByTitleOrDescriptionLike(query))
                 .orElseGet(blogpostRepository::findAll);
     }
@@ -92,8 +93,9 @@ public class BlogpostService {
         if (!StringUtils.hasText(blogpost.getDescription())) {
             throw new ValidationException("description should be present");
         }
-        if (!StringUtils.hasText(blogpost.getPublisher())) {
-            throw new ValidationException("publisher's name should be present");
+        if (blogpost.getPublisher() == null ||
+                !StringUtils.hasText(blogpost.getPublisher().getId())) {
+            throw new ValidationException("publisher should be present");
         }
     }
 }

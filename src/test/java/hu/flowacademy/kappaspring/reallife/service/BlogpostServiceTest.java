@@ -2,6 +2,7 @@ package hu.flowacademy.kappaspring.reallife.service;
 
 import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
+import hu.flowacademy.kappaspring.reallife.model.User;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostHashRepository;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostJpaRepository;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,6 +50,10 @@ class BlogpostServiceTest {
         assertThrows(ValidationException.class,
                 () -> blogpostService.save(
                         giveBlogpostWithoutPublisher()
+                ));
+        assertThrows(ValidationException.class,
+                () -> blogpostService.save(
+                        giveBlogpostWithoutPublisherId()
                 ));
     }
 
@@ -84,7 +90,7 @@ class BlogpostServiceTest {
         return Blogpost.builder()
                 .title("valami")
                 .description("valami mas")
-                .publisher("asdf")
+                .publisher(User.builder().id(UUID.randomUUID().toString()).username("username").build())
                 .build();
     }
 
@@ -92,6 +98,14 @@ class BlogpostServiceTest {
         return Blogpost.builder()
                 .title("title")
                 .description("desc")
+                .build();
+    }
+
+    private Blogpost giveBlogpostWithoutPublisherId() {
+        return Blogpost.builder()
+                .title("title")
+                .description("desc")
+                .publisher(User.builder().username("username").build())
                 .build();
     }
 
