@@ -9,8 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +21,6 @@ import java.util.stream.IntStream;
 
 @Slf4j
 @Component
-@Transactional
 @RequiredArgsConstructor
 public class InitDataLoader implements CommandLineRunner {
 
@@ -28,15 +28,29 @@ public class InitDataLoader implements CommandLineRunner {
     private final UserRepository userRepository;
     private final Faker faker;
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void run(String... args) throws Exception {
-        List<User> users = userRepository.saveAll(populateUsers());
+        List<User> users = executeUserSave();
 
+        executeBlogpostSave(users);
+    }
+
+    @Transactional
+    private void executeBlogpostSave(List<User> users) {
         List<Blogpost> blogposts = blogpostJpaRepository.saveAll(
                 populateBlogposts(users)
         );
 
         log.info("Generated {} blogposts", blogposts.size());
+    }
+
+    @Transactional
+    private List<User> executeUserSave() {
+        List<User> users = userRepository.saveAll(populateUsers());
+
+        log.info("saved {} users", users.size());
+        return users;
     }
 
     private List<User> populateUsers() {

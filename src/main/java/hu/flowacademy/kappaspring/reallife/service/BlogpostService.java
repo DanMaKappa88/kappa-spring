@@ -3,13 +3,12 @@ package hu.flowacademy.kappaspring.reallife.service;
 import hu.flowacademy.kappaspring.reallife.exception.ValidationException;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostJpaRepository;
-import hu.flowacademy.kappaspring.reallife.repository.BlogpostRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +18,8 @@ import java.util.function.Predicate;
 // Ellátjuk az osztályt @Service-szel, hogy a Spring Application Context-hez tartozzon
 // Így injektálni tud, és injektálhatóvá vállik (komponens lesz)
 @Service
+// Tranzakcióban futtatja az osztály összes metódusát
+@Transactional
 // Szükséges a konstruktoron keresztüli injektáláshoz
 @RequiredArgsConstructor
 public class BlogpostService {
@@ -66,12 +67,17 @@ public class BlogpostService {
     // úgy mint, updatedAt
     public Blogpost update(String id, Blogpost blogpost) {
         validate(blogpost.toBuilder().id(id).build());
-        return blogpostRepository.save(
-                blogpost.toBuilder()
-                .id(id)
-                .updatedAt(LocalDateTime.now())
-                .build()
-        );
+        try {
+            return blogpostRepository.save(
+                    blogpost.toBuilder()
+                    .id(id)
+                    .updatedAt(LocalDateTime.now())
+                    .build()
+            );
+        } catch (Exception e) { // ObjectOptimisticLockingFailureException // TODO check this part
+            return findOne(id)
+                    .orElseThrow(() -> new ValidationException("blogpost already deleted"));
+        }
     }
 
     // Tovább hív a repository-ra, ami ténylegesen tárolja az adatokat

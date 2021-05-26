@@ -36,6 +36,9 @@ public class Blogpost {
     @JoinColumn(nullable = false)
     private User publisher;
 
+    @Version
+    private int version;
+
 //    @OneToOne
 //    @JoinColumn(nullable = false)
 //    private User publisher;
