@@ -63,20 +63,17 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
         log.info("Jwt's content is: {}", body);
         String username = body.getSubject();
 
-//        userRepository.findFirstByUsername(username)
-//                .ifPresent(user ->
-//                        SecurityContextHolder.getContext().setAuthentication(
-//                        new UsernamePasswordAuthenticationToken(
-//                                User.builder().username(username)
-//                                        .authorities("admin")
-//                                        .build(), null) // TODO
-//                ));
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        User.builder().username(username)
-                                .password("admin")
-                                .authorities("admin")
-                                .build(), null, List.of()));
+        userRepository.findFirstByUsername(username)
+                .ifPresent(user ->
+                        SecurityContextHolder.getContext().setAuthentication(
+                        new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities())
+                ));
+//        SecurityContextHolder.getContext().setAuthentication(
+//                new UsernamePasswordAuthenticationToken(
+//                        User.builder().username(username)
+//                                .password("admin")
+//                                .authorities("admin")
+//                                .build(), null, List.of()));
 
 
         chain.doFilter(request, response);

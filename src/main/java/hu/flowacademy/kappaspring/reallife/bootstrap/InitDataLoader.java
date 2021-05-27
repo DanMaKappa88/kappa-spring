@@ -2,12 +2,14 @@ package hu.flowacademy.kappaspring.reallife.bootstrap;
 
 import com.github.javafaker.Faker;
 import hu.flowacademy.kappaspring.reallife.model.Blogpost;
+import hu.flowacademy.kappaspring.reallife.model.Role;
 import hu.flowacademy.kappaspring.reallife.model.User;
 import hu.flowacademy.kappaspring.reallife.repository.BlogpostJpaRepository;
 import hu.flowacademy.kappaspring.reallife.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,12 +27,21 @@ import java.util.stream.IntStream;
 public class InitDataLoader implements CommandLineRunner {
 
     private final BlogpostJpaRepository blogpostJpaRepository;
+    private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final Faker faker;
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public void run(String... args) throws Exception {
+        userRepository.findFirstByUsername("admin").orElseGet(() ->
+                userRepository.save(User.builder()
+                        .fullName("admin")
+                        .username("admin")
+                        .password(passwordEncoder.encode("admin"))
+                        .role(Role.ROLE_ADMIN)
+                        .build())
+        );
         List<User> users = executeUserSave();
 
         executeBlogpostSave(users);
@@ -56,11 +67,16 @@ public class InitDataLoader implements CommandLineRunner {
     private List<User> populateUsers() {
         return IntStream.range(0, 3)
                 .mapToObj(value ->
-                        User.builder()
-                                .id(UUID.randomUUID().toString())
-                                .username(faker.name().username())
-                                .fullName(faker.starTrek().character())
-                                .build())
+                {
+                    String username = faker.name().username();
+                    return User.builder()
+                            .id(UUID.randomUUID().toString())
+                            .username(username)
+                            .fullName(faker.starTrek().character())
+                            .role(Role.ROLE_USER)
+                            .password(passwordEncoder.encode(username))
+                            .build();
+                })
                 .collect(Collectors.toList());
     }
 

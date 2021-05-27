@@ -10,7 +10,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -31,11 +31,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser(User.builder().username("admin")
-                        .password(passwordEncoder().encode("admin"))
-                        .authorities("admin")
-                        .build()
+//        auth.inMemoryAuthentication()
+//                .withUser(User.builder().username("admin")
+//                        .password(passwordEncoder().encode("admin"))
+//                        .authorities("admin")
+//                        .build()
+//                )
+        auth.userDetailsService(username ->
+                userRepository.findFirstByUsername(username).orElseThrow(() -> new UsernameNotFoundException(username))
                 )
                 .passwordEncoder(passwordEncoder());
     }
@@ -49,6 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new AuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()
                     .antMatchers(HttpMethod.POST, "/api/users").permitAll()
+                    .antMatchers(HttpMethod.GET, "/api/users").hasAnyRole("ADMIN")
+//                    .antMatchers(HttpMethod.PUT, "/api/users").hasAnyAuthority("USER_UPDATE")
                     .anyRequest().authenticated()
                 .and()
                     .formLogin().disable();
