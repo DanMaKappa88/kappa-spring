@@ -22,7 +22,7 @@ spring:
     initialization-mode: never # always ha használni akarjuk a data.sql-t
     platform: mysql
   jpa:
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: create # create, create-drop, update, validate, none

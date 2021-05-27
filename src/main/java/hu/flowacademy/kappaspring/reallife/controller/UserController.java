@@ -3,11 +3,9 @@ package hu.flowacademy.kappaspring.reallife.controller;
 import hu.flowacademy.kappaspring.reallife.model.User;
 import hu.flowacademy.kappaspring.reallife.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.annotation.Retention;
 import java.util.List;
 import java.util.Optional;
 

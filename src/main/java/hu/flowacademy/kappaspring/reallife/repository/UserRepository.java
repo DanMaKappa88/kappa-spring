@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
 
@@ -16,4 +18,5 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Modifying // Kötelező, nélküle nem tudunk update műveletet végrehajtani
     void updateFullName(String id, String fullName);
 
+    Optional<User> findFirstByUsername(String username);
 }
